@@ -27,14 +27,6 @@ class ViewController: UIViewController {
     
     private var cardButtons = [UIButton]()
     
-    var flipCount = 0
-    
-    var score = 0
-    
-    private var visibleCardButtons: [UIButton]! {
-        return cardButtons.filter {!$0.superview!.isHidden}
-    }
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -161,6 +153,9 @@ class ViewController: UIViewController {
     private func updateViewFromModel() {
         // Update the flip count
         flipCountLabel.text = "Flips: \(game.flipCount)"
+        
+        // Update the Score
+        scoreLabel.text = "Score: \(game.score)"
         
         for index in cardButtons.indices {
             let button = cardButtons[index]

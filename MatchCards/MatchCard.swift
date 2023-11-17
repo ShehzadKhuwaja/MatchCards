@@ -11,7 +11,11 @@ class MatchCard {
     
     private(set) var cards = [Card]()
     
-    var flipCount = 0
+    private(set) var flipCount = 0
+    
+    private(set) var score = 0
+    
+    private(set) var discoveredCardsIndicies = [Int]()
     
     private var faceUpCardIndex: Int? {
         get {
@@ -46,8 +50,23 @@ class MatchCard {
                 if cards[matchIndex] == cards[index] {
                     cards[matchIndex].isMatched = true
                     cards[index].isMatched = true
+                    
+                    // increment score by 2
+                    score += 4
+                } else {
+                    
+                    if discoveredCardsIndicies.contains(index) {
+                        score -= 1
+                    }
+                    
+                    if discoveredCardsIndicies.contains(matchIndex) {
+                        score -= 1
+                    }
                 }
+                
                 cards[index].isFaceUp = true
+                discoveredCardsIndicies += [index, matchIndex]
+                
             } else {
                 faceUpCardIndex = index
             }
