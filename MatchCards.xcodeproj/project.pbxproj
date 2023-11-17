@@ -16,6 +16,7 @@
 		043BE26C2B028D9D00188142 /* MatchCardsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043BE26B2B028D9D00188142 /* MatchCardsTests.swift */; };
 		043BE2772B028D9D00188142 /* MatchCardsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043BE2762B028D9D00188142 /* MatchCardsUITests.swift */; };
 		043BE2882B028DBB00188142 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043BE2872B028DBB00188142 /* Card.swift */; };
+		047F32D72B068A2600C700F1 /* MatchCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047F32D62B068A2600C700F1 /* MatchCard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		043BE2762B028D9D00188142 /* MatchCardsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchCardsUITests.swift; sourceTree = "<group>"; };
 		043BE2782B028D9D00188142 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		043BE2872B028DBB00188142 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		047F32D62B068A2600C700F1 /* MatchCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchCard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 				043BE25F2B028D9D00188142 /* LaunchScreen.storyboard */,
 				043BE2622B028D9D00188142 /* Info.plist */,
 				043BE2872B028DBB00188142 /* Card.swift */,
+				047F32D62B068A2600C700F1 /* MatchCard.swift */,
 			);
 			path = MatchCards;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				043BE2592B028D9B00188142 /* ViewController.swift in Sources */,
+				047F32D72B068A2600C700F1 /* MatchCard.swift in Sources */,
 				043BE2552B028D9B00188142 /* AppDelegate.swift in Sources */,
 				043BE2572B028D9B00188142 /* SceneDelegate.swift in Sources */,
 				043BE2882B028DBB00188142 /* Card.swift in Sources */,

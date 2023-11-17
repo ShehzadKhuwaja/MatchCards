@@ -9,17 +9,39 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    let cardSymbols = ["🐶", "🐱", "🐭", "🦊", "🐼", "🐯"]
+    var numberOfRows = 3
+    var cardsPerRow = 4
     
-    var cards = [Card]()
-    var flippedCards = [Card]()
+    var numberOfPairOfCards: Int {
+        return (numberOfRows * cardsPerRow) / 2
+    }
+    
+    private lazy var game = MatchCard(numberOfPairsOfCards: self.numberOfPairOfCards)
+    
+    private var cardEmoji = [Card: String]()
+    private var emojiChoices = "🐶🐱🐭🐹🦁🐔🙊🦇🦊"
+    
+    let flipCountLabel = UILabel()
+    
+    let scoreLabel = UILabel()
+    
+    private var cardButtons = [UIButton]()
+    
+    var flipCount = 0
+    
     var score = 0
+    
+    private var visibleCardButtons: [UIButton]! {
+        return cardButtons.filter {!$0.superview!.isHidden}
+    }
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        createCardUI(numberOfRows: 6, cardsPerRow: 6)
+        createCardUI(numberOfRows: self.numberOfRows, cardsPerRow: self.cardsPerRow)
+        updateViewFromModel()
     }
     
     func createCardUI(numberOfRows: Int, cardsPerRow: Int) {
@@ -31,10 +53,10 @@ class ViewController: UIViewController {
         topStackView.spacing = 10
         
         // Create the score label and flip count label
-        let scoreLabel = UILabel()
+        //let scoreLabel = UILabel()
         scoreLabel.text = "Score: 0"
         scoreLabel.textAlignment = .left
-        let flipCountLabel = UILabel()
+        //let flipCountLabel = UILabel()
         flipCountLabel.text = "Flips: 0"
         flipCountLabel.textAlignment = .right
         
@@ -60,7 +82,13 @@ class ViewController: UIViewController {
             for _ in 0..<cardsPerRow {
                 let cardButton = UIButton()
                 cardButton.setTitle("", for: .normal)
-                cardButton.backgroundColor = .red
+                //cardButton.backgroundColor = .red
+                
+                // add the card button to card buttons array
+                cardButtons.append(cardButton)
+                
+                // add the target-action pair
+                cardButton.addTarget(self, action: #selector(cardButtonTapped(_:)), for: .touchUpInside)
                 
                 rowStackView.addArrangedSubview(cardButton)
             }
@@ -82,13 +110,20 @@ class ViewController: UIViewController {
         // Add the parent stack view to the main view
         view.addSubview(parentStackView)
         
+        let restartButton = UIButton()
+        restartButton.setTitle("Restart", for: .normal)
+        restartButton.backgroundColor = .blue
+        restartButton.addTarget(self, action: #selector(restartButtonTapped(_:)), for: .touchUpInside)
+        
+        view.addSubview(restartButton)
+        
         // Add constraints to define the position and size of the parent stack view
         parentStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             parentStackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
             parentStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             parentStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            parentStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+            parentStackView.bottomAnchor.constraint(equalTo: restartButton.topAnchor, constant: -20)
         ])
         
         topStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -104,12 +139,76 @@ class ViewController: UIViewController {
             bottomStackView.bottomAnchor.constraint(equalTo: parentStackView.bottomAnchor)
         ])
         
+        restartButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            restartButton.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.1),
+            restartButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            restartButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            restartButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+        ])
+        
     }
     
     @objc func cardButtonTapped(_ sender: UIButton) {
+        flipCount += 1
+        if let cardNumber = cardButtons.firstIndex(of: sender) {
+            game.chooseCard(at: cardNumber)
+            updateViewFromModel()
+        } else {
+            print("Card chosen was not in cardbuttons array")
+        }
+    }
+    
+    private func updateViewFromModel() {
+        // Update the flip count
+        flipCountLabel.text = "Flips: \(flipCount)"
+        
+        for index in cardButtons.indices {
+            let button = cardButtons[index]
+            let card = game.cards[index]
+            if card.isFaceUp {
+                button.setTitle(getEmoji(for: card), for: .normal)
+                button.backgroundColor = .white
+            } else {
+                button.setTitle("", for: .normal)
+                button.backgroundColor = card.isMatched ? .white : .red
+            }
+        }
+    }
+    
+    private func getEmoji(for card: Card) -> String {
+        if cardEmoji[card] == nil, emojiChoices.count > 0 {
+            let stringIndex = emojiChoices.index(emojiChoices.startIndex, offsetBy: emojiChoices.count.arc4Random)
+            cardEmoji[card] = String(emojiChoices.remove(at: stringIndex))
+            
+            //let randomIndex = getRandomIndex(for: emojiChoices.count)
+            //cardEmoji[card] = emojiChoices.remove(at: randomIndex)
+        }
+        return cardEmoji[card] ?? "?"
+    }
+    
+    func getRandomIndex(for arrayCount: Int) -> Int {
+        return Int(arc4random_uniform(UInt32(arrayCount)))
+    }
+    
+    
+    @objc func restartButtonTapped(_ sender: UIButton) {
         
     }
 
 
+}
+
+extension Int {
+    var arc4Random: Int {
+        switch self {
+        case 1...Int.max:
+            return Int(arc4random_uniform(UInt32(self)))
+        case -Int.max..<0:
+            return Int(arc4random_uniform(UInt32(self)))
+        default:
+            return 0
+        }
+    }
 }
 
