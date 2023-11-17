@@ -27,6 +27,12 @@ class ViewController: UIViewController {
     
     private var cardButtons = [UIButton]()
     
+    var lastCardButtonTapped: UIButton!
+    
+    var secondLastCardButtonTapped: UIButton!
+    
+    var FlippedCardCount = 0
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -142,8 +148,33 @@ class ViewController: UIViewController {
     }
     
     @objc func cardButtonTapped(_ sender: UIButton) {
+        
+        FlippedCardCount += 1
+        
+        if FlippedCardCount != 3 {
+            secondLastCardButtonTapped = lastCardButtonTapped
+            lastCardButtonTapped = sender
+        }
+        if lastCardButtonTapped == nil {
+            lastCardButtonTapped = sender
+            secondLastCardButtonTapped = sender
+        }
+        
+        
+        if FlippedCardCount == 3 {
+            if lastCardButtonTapped != secondLastCardButtonTapped {
+                if lastCardButtonTapped.title(for: .normal) != secondLastCardButtonTapped.title(for: .normal) {
+                    UIView.transition(with: lastCardButtonTapped, duration: 0.6, options: [.transitionFlipFromLeft], animations: nil, completion: nil)
+                    UIView.transition(with: secondLastCardButtonTapped, duration: 0.6, options: [.transitionFlipFromLeft], animations: nil, completion: nil)
+                }
+            }
+            lastCardButtonTapped = sender
+            FlippedCardCount = 1
+        }
+        
         if let cardNumber = cardButtons.firstIndex(of: sender) {
             game.chooseCard(at: cardNumber)
+            flipCard(game.cards[cardNumber], button: sender)
             updateViewFromModel()
         } else {
             print("Card chosen was not in cardbuttons array")
@@ -166,6 +197,9 @@ class ViewController: UIViewController {
             } else {
                 button.setTitle("", for: .normal)
                 button.backgroundColor = card.isMatched ? .white : .red
+                if card.isMatched {
+                    button.isEnabled = false
+                }
             }
         }
     }
@@ -181,8 +215,9 @@ class ViewController: UIViewController {
         return cardEmoji[card] ?? "?"
     }
     
-    func getRandomIndex(for arrayCount: Int) -> Int {
-        return Int(arc4random_uniform(UInt32(arrayCount)))
+    
+    func flipCard(_ card: Card, button: UIButton) {
+        UIView.transition(with: button, duration: 0.6, options: [.transitionFlipFromLeft], animations: nil, completion: nil)
     }
     
     
