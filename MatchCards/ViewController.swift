@@ -150,7 +150,6 @@ class ViewController: UIViewController {
     }
     
     @objc func cardButtonTapped(_ sender: UIButton) {
-        flipCount += 1
         if let cardNumber = cardButtons.firstIndex(of: sender) {
             game.chooseCard(at: cardNumber)
             updateViewFromModel()
@@ -161,7 +160,7 @@ class ViewController: UIViewController {
     
     private func updateViewFromModel() {
         // Update the flip count
-        flipCountLabel.text = "Flips: \(flipCount)"
+        flipCountLabel.text = "Flips: \(game.flipCount)"
         
         for index in cardButtons.indices {
             let button = cardButtons[index]

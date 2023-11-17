@@ -11,6 +11,8 @@ class MatchCard {
     
     private(set) var cards = [Card]()
     
+    var flipCount = 0
+    
     private var faceUpCardIndex: Int? {
         get {
             return cards.indices.filter {cards[$0].isFaceUp}.oneAndOnly
@@ -39,6 +41,7 @@ class MatchCard {
         assert(cards.indices.contains(index), "Choosen index not in Cards")
         
         if !cards[index].isMatched {
+            flipCount += 1
             if let matchIndex = faceUpCardIndex, matchIndex != index {
                 if cards[matchIndex] == cards[index] {
                     cards[matchIndex].isMatched = true
