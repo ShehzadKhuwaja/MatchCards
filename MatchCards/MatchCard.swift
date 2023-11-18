@@ -17,6 +17,8 @@ class MatchCard {
     
     private(set) var discoveredCardsIndicies = [Int]()
     
+    private var startTime: Date?
+    
     private var faceUpCardIndex: Int? {
         get {
             return cards.indices.filter {cards[$0].isFaceUp}.oneAndOnly
@@ -26,6 +28,18 @@ class MatchCard {
                 cards[index].isFaceUp = (index == newValue)
             }
         }
+    }
+    
+    // Method to start the timer
+    func startTimer() {
+        startTime = Date()
+    }
+    
+    // Method to Check if the match occurred within the time limit
+    func didMatchWithinTimeLimit() -> Bool {
+        guard let startTime = startTime else { return false }
+        let elapsedTime = Date().timeIntervalSince(startTime)
+        return elapsedTime <= 5.0
     }
     
     init(numberOfPairsOfCards: Int) {
@@ -53,6 +67,13 @@ class MatchCard {
                     
                     // increment score by 2
                     score += 4
+                    
+                    // bonus score
+                    // Check if the match occured within the time limit
+                    if didMatchWithinTimeLimit() {
+                        // Award bonus score for matching within 5 seconds
+                        score += 2
+                    }
                 } else {
                     
                     if discoveredCardsIndicies.contains(index) {
@@ -69,6 +90,7 @@ class MatchCard {
                 
             } else {
                 faceUpCardIndex = index
+                startTimer()
             }
         }
         
